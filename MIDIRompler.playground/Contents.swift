@@ -40,26 +40,32 @@ func receive(ev : MIDIEvent) -> () {
     }
 }
 
-// set the callback for all inputs
-midi.inputs.forEach {
-    $0.value.onMIDIMessage = receive
-}
-
 // create log view
 let textview = UITextView(frame: CGRect(x: 0, y: 60, width: 600, height: 600))
 textview.isEditable = false
 
+func log(_ text: String) {
+    textview.text = textview.text + "\(text)\n"
+}
+
+// set the callback for all inputs
+midi.inputs.forEach {
+    log("connected to \($0.value.displayName)")
+    $0.value.onMIDIMessage = receive
+}
+
+
 // called if a port is added or removed 
 midi.onStateChange = { (noti: MIDIPortNotification, port: MIDIPort) -> () in
-    textview.text = textview.text + "\(noti)\n"
+    log("\(noti)\n")
     switch noti {
     case .added:
-        textview.text = textview.text + "port:\(port.displayName)\n"
+        log("port:\(port.displayName)\n")
         if port.type == .input {
             (port as! MIDIInput).onMIDIMessage = receive
         }
     case .removed:
-        textview.text = textview.text + "port:\(port.displayName)\n"
+        log("port:\(port.displayName)\n")
     }
  }
 
