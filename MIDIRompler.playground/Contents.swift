@@ -77,13 +77,15 @@ class Responder : NSObject {
     @objc func noteOn() {
         // broadcast noteOn
         midi.outputs.forEach { 
-             $0.value.send(noteOnMsg)
+            sampler.sendMIDIEvent(noteOnMsg[0], data1: noteOnMsg[1],data2: noteOnMsg[2])
+            $0.value.send(noteOnMsg)
         }
     }
     @objc func noteOff() {
         // broadcast noteOff
         midi.outputs.forEach { 
-            $0.value.send(noteOffMsg)
+           sampler.sendMIDIEvent(noteOffMsg[0], data1: noteOffMsg[1],data2: noteOffMsg[2])
+           $0.value.send(noteOffMsg)
         }
     }
 }
